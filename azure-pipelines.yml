@@ -41,6 +41,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'rpslsRegistry'
+        repository: 'DotNetPlayer.Api'
         command: 'buildAndPush'
         Dockerfile: 'Source/Services/RPSLS.DotNetPlayer.Api/Dockerfile'
         tags: '$(Build.SourceVersion)'
