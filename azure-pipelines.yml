@@ -111,7 +111,7 @@ stages:
     #     tags: '$(Build.SourceVersion)'  
 
 
-    - publish: 'deploy/helm/'
+    - publish: 'deploy/helm'
       artifact: helm
 
     
