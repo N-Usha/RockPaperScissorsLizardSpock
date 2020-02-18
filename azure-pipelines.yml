@@ -37,29 +37,29 @@ stages:
     #     KeyVaultName: 'piggymetrics'
     #     SecretsFilter: '*'
     
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        command: 'buildAndPush'
+        Dockerfile: '/Source/Services/RPSLS.DotNetPlayer.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
+
     - task: DockerCompose@0
       displayName: Docker compose Build container images for each service
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'rpslsRegistry'
         dockerComposeFile: '**/docker-compose.yml'
-        action: 'Run a Docker Compose command'
-        dockerComposeCommand: 'build'
+        action: 'Build services'
 
-    - task: Docker@2
-      displayName: Docker login
-      inputs:
-        containerRegistry: 'rpslsRegistry'
-        command: 'login'
-    
     - task: DockerCompose@0
       displayName: Docker compose Push container images for each service into ACR
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'rpslsRegistry'
         dockerComposeFile: '**/docker-compose.yml'
-        action: 'Run a Docker Compose command'
-        dockerComposeCommand: 'push'
+        action: 'Push services'
 
     - publish: '/deploy/helm/'
       artifact: helm
