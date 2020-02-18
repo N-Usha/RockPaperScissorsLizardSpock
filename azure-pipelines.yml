@@ -45,24 +45,24 @@ stages:
         Dockerfile: 'Source/Services/RPSLS.DotNetPlayer.Api/Dockerfile'
         tags: '$(Build.SourceVersion)'
 
-    - task: DockerCompose@0
-      displayName: Docker compose Build container images for each service
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'rpslsRegistry'
-        dockerComposeFile: '**/docker-compose.yml'
-        action: 'Build services'
+    # - task: DockerCompose@0
+    #   displayName: Docker compose Build container images for each service
+    #   inputs:
+    #     containerregistrytype: 'Container Registry'
+    #     dockerRegistryEndpoint: 'rpslsRegistry'
+    #     dockerComposeFile: '**/docker-compose.yml'
+    #     action: 'Build services'
 
-    - task: DockerCompose@0
-      displayName: Docker compose Push container images for each service into ACR
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'rpslsRegistry'
-        dockerComposeFile: '**/docker-compose.yml'
-        action: 'Push services'
+    # - task: DockerCompose@0
+    #   displayName: Docker compose Push container images for each service into ACR
+    #   inputs:
+    #     containerregistrytype: 'Container Registry'
+    #     dockerRegistryEndpoint: 'rpslsRegistry'
+    #     dockerComposeFile: '**/docker-compose.yml'
+    #     action: 'Push services'
 
-    - publish: '/deploy/helm/'
-      artifact: helm
+    # - publish: '/deploy/helm/'
+    #   artifact: helm
 
     
 
