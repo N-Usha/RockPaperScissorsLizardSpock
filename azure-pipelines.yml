@@ -47,16 +47,14 @@ stages:
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
 
-    - task: Docker@1
-      displayName: Docker compose Build container images for each service
+    - task: Docker@2
+      displayName: Docker login
       inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscriptionEndpoint: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
-        azureContainerRegistry: 'rpslsregistry.azurecr.io'
+        containerRegistry: 'rpslsRegistry'
         command: 'login'
     
     - task: DockerCompose@0
-      displayName: Docker compose Build container images for each service
+      displayName: Docker compose Push container images for each service into ACR
       inputs:
         containerregistrytype: 'Azure Container Registry'
         azureSubscription: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
@@ -65,7 +63,7 @@ stages:
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'push'
 
-    - publish: deploy/helm/
+    - publish: '/deploy/helm/'
       artifact: helm
 
     
