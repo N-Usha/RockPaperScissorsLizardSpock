@@ -39,31 +39,80 @@ stages:
     
 
     - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
       inputs:
         containerRegistry: 'rpslsRegistry'
-        repository: 'DotNetPlayer.Api'
+        repository: 'DotNet.player'
         command: 'buildAndPush'
         Dockerfile: 'Source/Services/RPSLS.DotNetPlayer.Api/Dockerfile'
         tags: '$(Build.SourceVersion)'
+  
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'Node.player'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.NodePlayer.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
 
-    # - task: DockerCompose@0
-    #   displayName: Docker compose Build container images for each service
-    #   inputs:
-    #     containerregistrytype: 'Container Registry'
-    #     dockerRegistryEndpoint: 'rpslsRegistry'
-    #     dockerComposeFile: '**/docker-compose.yml'
-    #     action: 'Build services'
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'Python.player'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.PythonPlayer.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
+    
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'php.player'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.PHPPlayer.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
 
-    # - task: DockerCompose@0
-    #   displayName: Docker compose Push container images for each service into ACR
-    #   inputs:
-    #     containerregistrytype: 'Container Registry'
-    #     dockerRegistryEndpoint: 'rpslsRegistry'
-    #     dockerComposeFile: '**/docker-compose.yml'
-    #     action: 'Push services'
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'Java.Player'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.JavaPlayer.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
+    
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'game.Api'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.Game.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
+  
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'Web'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.Web.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'
 
-    # - publish: '/deploy/helm/'
-    #   artifact: helm
+    - task: Docker@2
+      displayName: Docker Build & Push for DotNetPlayer.Api
+      inputs:
+        containerRegistry: 'rpslsRegistry'
+        repository: 'modeluploader'
+        command: 'buildAndPush'
+        Dockerfile: 'Source/Services/RPSLS.ModelUploader.Api/Dockerfile'
+        tags: '$(Build.SourceVersion)'  
+
+
+    - publish: '/deploy/helm/'
+      artifact: helm
 
     
 
