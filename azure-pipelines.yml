@@ -39,7 +39,7 @@ stages:
     
 
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for DotNetPlayer
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'DotNet.player'
@@ -48,7 +48,7 @@ stages:
         tags: '$(Build.SourceVersion)'
   
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for NodePlayer
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'Node.player'
@@ -57,7 +57,7 @@ stages:
         tags: '$(Build.SourceVersion)'
 
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for PythonPlayer
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'Python.player'
@@ -66,7 +66,7 @@ stages:
         tags: '$(Build.SourceVersion)'
     
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for PHPPlayer
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'php.player'
@@ -75,7 +75,7 @@ stages:
         tags: '$(Build.SourceVersion)'
 
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for JavaPlayer
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'Java.Player'
@@ -84,30 +84,30 @@ stages:
         tags: '$(Build.SourceVersion)'
     
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for Game.Api
       inputs:
         containerRegistry: 'rpslsRegistry'
-        repository: 'game.Api'
+        repository: 'game.api'
         command: 'buildAndPush'
         Dockerfile: 'Source/Services/RPSLS.Game.Api/Dockerfile'
         tags: '$(Build.SourceVersion)'
   
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for Web
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'Web'
         command: 'buildAndPush'
-        Dockerfile: 'Source/Services/RPSLS.Web.Api/Dockerfile'
+        Dockerfile: 'Source/Services/RPSLS.Web/Dockerfile'
         tags: '$(Build.SourceVersion)'
 
     - task: Docker@2
-      displayName: Docker Build & Push for DotNetPlayer.Api
+      displayName: Docker Build & Push for ModelUploader
       inputs:
         containerRegistry: 'rpslsRegistry'
         repository: 'modeluploader'
         command: 'buildAndPush'
-        Dockerfile: 'Source/Services/RPSLS.ModelUploader.Api/Dockerfile'
+        Dockerfile: 'Source/Services/RPSLS.ModelUploader/Dockerfile'
         tags: '$(Build.SourceVersion)'  
 
 
