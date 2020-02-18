@@ -1,0 +1,121 @@
+# Build and Deploy RockPaperScissorsLizardSpock to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  REGISTRY: 'rpslsRegistry.azurecr.io'
+  vmImageName: 'ubuntu-latest'
+  TAG: '$(Build.SourceVersion)'
+
+  # aksName: "$($aks.name)"
+  # aksHost: "$aksHost"
+  # tenant: "$($keyvault.properties.tenantId)"
+  # kvName: "$($keyvault.name)"
+  # acrName: "$acrName"
+  # clientid: "$($aks.servicePrincipalProfile.clientId)"
+  
+
+stages:
+- stage: Build 
+  displayName: Build stage
+  jobs:  
+  - job: Build 
+    displayName: Build and Push Container Images
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    # - task: AzureKeyVault@1
+    #   displayName: Fetch secrets from Azure Key vault
+    #   inputs:
+    #     azureSubscription: 'Java Demos 2'
+    #     KeyVaultName: 'piggymetrics'
+    #     SecretsFilter: '*'
+    
+    - task: DockerCompose@0
+      displayName: Docker compose Build container images for each service
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
+        azureContainerRegistry: '{"loginServer":"rpslsregistry.azurecr.io", "id" : "/subscriptions/afc11291-9826-46be-b852-70349146ddf8/resourceGroups/rpsls/providers/Microsoft.ContainerRegistry/registries/rpslsRegistry"}'
+        dockerComposeFile: '**/docker-compose.yml'
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: '"build -f"'
+
+    - task: Docker@1
+      displayName: Docker compose Build container images for each service
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscriptionEndpoint: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
+        azureContainerRegistry: 'rpslsregistry.azurecr.io'
+        command: 'login'
+    
+    - task: DockerCompose@0
+      displayName: Docker compose Build container images for each service
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
+        azureContainerRegistry: '{"loginServer":"rpslsregistry.azurecr.io", "id" : "/subscriptions/afc11291-9826-46be-b852-70349146ddf8/resourceGroups/rpsls/providers/Microsoft.ContainerRegistry/registries/rpslsRegistry"}'
+        dockerComposeFile: '**/docker-compose.yml'
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: '"push -f"'
+
+    - publish: deploy/helm/
+      artifact: helm
+
+    
+
+# - stage: Deploy
+#   displayName: Deploy stage
+#   dependsOn: Build
+
+#   jobs:
+#   - deployment: Deploy
+#     displayName: Deploy to AKS
+#     pool:
+#       vmImage: $(vmImageName)
+#     environment: 'RockPaperScissorsLizardSpock.demo'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - task: AzureKeyVault@1
+#             displayName: Fetch secrets from Azure Key vault
+#             inputs:
+#               azureSubscription: 'Java Demos 2'
+#               KeyVaultName: 'piggymetrics'
+#               SecretsFilter: '*'
+          
+#           - task: replacetokens@3
+#             displayName: Replace CONTAINER_REGISTRY & IMAGE_TAG in all the manifest files
+#             inputs:
+#               targetFiles: '$(Pipeline.Workspace)/kubernetes/*.yaml'
+#               tokenPrefix: '${'
+#               tokenSuffix: '}'
+
+#           - task: KubernetesManifest@0
+#             displayName: Create generic secrets to be available on pods
+#             inputs:
+#               action: 'createSecret'
+#               secretType: 'generic'
+#               secretName: 'piggymetrics'
+#               secretArguments: '--from-literal=config_service_password=$(CONFIG-SERVICE-PASSWORD) --from-literal=notification_service_password=$(NOTIFICATION-SERVICE-PASSWORD) --from-literal=statistics_service_password=$(STATISTICS-SERVICE-PASSWORD) --from-literal=account_service_password=$(ACCOUNT-SERVICE-PASSWORD) --from-literal=rabbitmq_password=$(RABBITMQ-PASSWORD) --from-literal=mongodb_uri=$(MONGODB-URI)  --from-literal=mongodb_database=$(MONGODB-DATABASE) --from-literal=rabbitmq_username=$(RABBITMQ-USERNAME) --from-literal=rabbitmq_host=$(RABBITMQ-HOST) --from-literal=rabbitmq_port=$(RABBITMQ-PORT)  --from-literal=notification_email_user=$(SMTP-USER) --from-literal=notification_email_pass=$(SMTP-PASSWORD) --from-literal=notification_email_host=$(NOTIFICATION-EMAIL-HOST) --from-literal=notification_email_port=$(NOTIFICATION-EMAIL-PORT)'
+
+
+#           - task: KubernetesManifest@0
+#             displayName: Deploy to Kubernetes cluster
+#             inputs:
+#               action: deploy
+#               manifests: |
+#                 $(Pipeline.Workspace)/kubernetes/1-config.yaml
+#                 $(Pipeline.Workspace)/kubernetes/2-registry.yaml
+#                 $(Pipeline.Workspace)/kubernetes/3-gateway.yaml
+#                 $(Pipeline.Workspace)/kubernetes/4-auth-service.yaml
+#                 $(Pipeline.Workspace)/kubernetes/5-account-service.yaml
+#                 $(Pipeline.Workspace)/kubernetes/6-statistics-service.yaml
+#                 $(Pipeline.Workspace)/kubernetes/7-notification-service.yaml
