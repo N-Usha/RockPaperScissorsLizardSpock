@@ -40,9 +40,8 @@ stages:
     - task: DockerCompose@0
       displayName: Docker compose Build container images for each service
       inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscription: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
-        azureContainerRegistry: '{"loginServer":"rpslsregistry.azurecr.io", "id" : "/subscriptions/afc11291-9826-46be-b852-70349146ddf8/resourceGroups/rpsls/providers/Microsoft.ContainerRegistry/registries/rpslsRegistry"}'
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'rpslsRegistry'
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
@@ -56,9 +55,8 @@ stages:
     - task: DockerCompose@0
       displayName: Docker compose Push container images for each service into ACR
       inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscription: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
-        azureContainerRegistry: '{"loginServer":"rpslsregistry.azurecr.io", "id" : "/subscriptions/afc11291-9826-46be-b852-70349146ddf8/resourceGroups/rpsls/providers/Microsoft.ContainerRegistry/registries/rpslsRegistry"}'
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'rpslsRegistry'
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'push'
