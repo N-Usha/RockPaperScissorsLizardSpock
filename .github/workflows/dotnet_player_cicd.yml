@@ -1,4 +1,4 @@
-# Dotnet player workflow
+# Dotnet player workflow for the sample app
 
 name: DotnetPlayer
 
@@ -31,16 +31,21 @@ jobs:
         az acr login -n ${{ secrets.ACR_NAME }}
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/dotnet.player:gh-${{ github.sha }}
     - name: Set AKS kubectl context
-      uses: azure/k8s-actions/aks-set-context@master
+      uses: azure/aks-set-context@v1
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}'
         cluster-name: ${{ secrets.CLUSTER_NAME }}
         resource-group: ${{ secrets.RESOURCE_GROUP }}        
-    - name: Init Helm
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: 'v3.1.1'
+      id: install        
+    - name: Helm repo add
       run: |
-        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
-        chmod 700 get_helm.sh
-        ./get_helm.sh
+        #curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+        #chmod 700 get_helm.sh
+        #./get_helm.sh
         az acr helm repo add -n ${{ secrets.ACR_NAME }}
     - name: Package Helm chart
       run: |

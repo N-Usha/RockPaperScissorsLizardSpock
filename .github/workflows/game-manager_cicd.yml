@@ -1,4 +1,4 @@
-# Game Manager Workflow
+# Game Manager Workflow for the sample app
 
 name: Game Manager 
 
@@ -31,16 +31,21 @@ jobs:
         az acr login -n ${{ secrets.ACR_NAME }}
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/game.api:gh-${{ github.sha }}
     - name: Set AKS kubectl context
-      uses: azure/k8s-actions/aks-set-context@master
+      uses: azure/aks-set-context@v1
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}'
         cluster-name: ${{ secrets.CLUSTER_NAME }}
         resource-group: ${{ secrets.RESOURCE_GROUP }}        
-    - name: Init Helm
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: 'v3.1.1'
+      id: install        
+    - name: Helm repo add
       run: |
-        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
-        chmod 700 get_helm.sh
-        ./get_helm.sh
+        #curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+        #chmod 700 get_helm.sh
+        #./get_helm.sh
         az acr helm repo add -n ${{ secrets.ACR_NAME }}
     - name: Package Helm chart
       run: |
@@ -52,7 +57,7 @@ jobs:
       shell: pwsh
       run: |
         az extension add --name application-insights
-        Deploy/powershell/Generate-Config.ps1 -gvaluesTemplate gvalues.template.gh -resourceGroup ${{ secrets.RESOURCE_GROUP }} -outputFile _values-gh.yaml -sslSupport custom -aksHost ${{ secrets.AKS_HOST }} -resourceGroupAcr ${{ secrets.RESOURCE_GROUP_ACR }}
+        Deploy/powershell/Generate-Config.ps1 -gvaluesTemplate gvalues.template.gh -resourceGroup ${{ secrets.RESOURCE_GROUP }} -outputFile _values-gh.yaml -sslSupport custom -aksHost ${{ secrets.AKS_HOST }} -resourceGroupAcr ${{ secrets.RESOURCE_GROUP_ACR }} -kvClientId ${{ secrets.KV_CLIENT_ID }}
     - name: Install Helm Chart
       run: |
         helm repo update
